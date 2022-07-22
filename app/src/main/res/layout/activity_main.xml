@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewDestino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/cidade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextCidade"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDestino"
+            tools:ignore="LabelFor" />
+
+        <Spinner
+            android:id="@+id/spinnerPais"
+            android:layout_width="261dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPais" />
+
+        <TextView
+            android:id="@+id/textViewPais"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/selecione_pais"
+            app:layout_constraintStart_toStartOf="@+id/editTextCidade"
+            app:layout_constraintTop_toBottomOf="@+id/editTextCidade" />
+
+        <CheckBox
+            android:id="@+id/checkBoxBagagem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/possui_bagagem"
+            app:layout_constraintStart_toEndOf="@+id/RadioGroupTipo"
+            app:layout_constraintTop_toTopOf="@+id/RadioGroupTipo" />
+
+        <TextView
+            android:id="@+id/textViewIda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/data_ida"
+            app:layout_constraintStart_toStartOf="@+id/spinnerPais"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerPais" />
+
+        <EditText
+            android:id="@+id/editTextDataIda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="date"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="@+id/textViewIda"
+            app:layout_constraintTop_toBottomOf="@+id/textViewIda"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            android:id="@+id/textViewVolta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/data_volta"
+            app:layout_constraintStart_toStartOf="@+id/editTextDataIda"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDataIda" />
+
+        <EditText
+            android:id="@+id/editTextDataVolta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="date|datetime"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="@+id/textViewVolta"
+            app:layout_constraintTop_toBottomOf="@+id/textViewVolta"
+            tools:ignore="LabelFor" />
+
+        <RadioGroup
+            android:id="@+id/RadioGroupTipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@+id/editTextDataVolta"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDataVolta">
+
+            <RadioButton
+                android:id="@+id/radioButtonRodoviario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rodoviario" />
+
+            <RadioButton
+                android:id="@+id/radioButtonAereo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/aereo" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/buttonSalvar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:onClick="salvar"
+            android:text="@string/salvar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/RadioGroupTipo"
+            tools:ignore="UsingOnClickInXml" />
+
+        <Button
+            android:id="@+id/buttonLimpar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:onClick="limparCampos"
+            android:text="@string/limpar"
+            app:layout_constraintStart_toEndOf="@+id/buttonSalvar"
+            app:layout_constraintTop_toTopOf="@+id/buttonSalvar"
+            tools:ignore="UsingOnClickInXml" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
