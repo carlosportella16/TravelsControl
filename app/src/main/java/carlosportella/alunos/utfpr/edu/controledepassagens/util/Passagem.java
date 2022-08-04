@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class Passagem {
 
+
+
     private String cidade;
     private Pais pais;
     private Date dataIda;

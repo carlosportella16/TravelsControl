@@ -76,6 +76,7 @@ public class ListaPassagensAdapter extends BaseAdapter {
             holder = (PassagensHolder) view.getTag();
         }
 
+        //TODO passar dados corretos
         holder.imageViewBandeira.setImageDrawable(passagens.get(i).getPais().getBandeira());
         holder.textViewNomePais.setText(passagens.get(i).getPais().getNome());
         holder.textViewNomeCidade.setText(passagens.get(i).getCidade());

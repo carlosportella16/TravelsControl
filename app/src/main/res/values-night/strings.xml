@@ -34,4 +34,12 @@
     <string name="no">\" no \"</string>
     <string name="foi_clicado">\" foi clicado!\"</string>
     <string name="traco">\" - \"</string>
+    <string name="carlos_eduardo_rosa_portella">Carlos Eduardo Rosa Portella</string>
+    <string name="sobre">Sobre</string>
+    <string name="adicionar">Adicionar</string>
+    <string name="autor">Autor:</string>
+    <string name="email_carlos">carlosportella16@hotmail.com</string>
+    <string name="email">E-mail:</string>
+    <string name="pos_java">Pós Graduação em Desenvolvimento Java</string>
+    <string name="curso">Curso:</string>
 </resources>
