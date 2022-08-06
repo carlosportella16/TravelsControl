@@ -42,4 +42,5 @@
     <string name="email">E-mail:</string>
     <string name="pos_java">Pós Graduação em Desenvolvimento Java</string>
     <string name="curso">Curso:</string>
+    <string name="nova_passagem">Nova Passagem</string>
 </resources>

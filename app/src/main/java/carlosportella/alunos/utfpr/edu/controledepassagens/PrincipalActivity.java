@@ -1,10 +1,13 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,29 +24,36 @@ import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.DataConvert
 public class PrincipalActivity extends AppCompatActivity {
 
     private ListView listViewPassagens;
-    private ListaPassagensAdapter listaPassagensAdapter;
     private ArrayList<Passagem> passagemLista;
+    ListaPassagensAdapter listaPassagensAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-
         listViewPassagens = findViewById(R.id.listViewPassagens);
 
-        try {
-            popularLista();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        listViewPassagens.setOnItemClickListener((parent, view, position, id) -> {
+
+            Passagem passagem = passagemLista.get(position);
+
+            Toast.makeText(getApplicationContext(), getString(R.string.passagem_para) +
+                            passagem.getCidade() +
+                            getString(R.string.traco)+
+                            passagem.getPais().getNome() +
+                            getString(R.string.foi_clicado),
+                    Toast.LENGTH_LONG).show();
+        });
+
+        popularLista();
 
     }
 
-    //TODO VERIFICAR COMO FOI FEITO ANTES
-    private void popularLista() throws ParseException {
+
+    private void popularLista() {
+
         passagemLista = new ArrayList<>();
-        //TODO
-        //listaPassagensAdapter = new ListaPassagensAdapter();
+        listaPassagensAdapter = new ListaPassagensAdapter(this, passagemLista);
         listViewPassagens.setAdapter(listaPassagensAdapter);
     }
 
@@ -55,31 +65,36 @@ public class PrincipalActivity extends AppCompatActivity {
         SobreActivity.sobre(this);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             try {
-            String cidade = bundle.getString(PassagemActivity.CIDADE);
-            String pais = bundle.getString(PassagemActivity.PAIS);
+                String cidade = bundle.getString(PassagemActivity.CIDADE);
+                String pais = bundle.getString(PassagemActivity.PAIS);
+                int bandeira = bundle.getInt(PassagemActivity.BANDEIRA);
 
-            Date data_ida = DataConverter.converteStringToDate(bundle.getString(PassagemActivity.DATA_IDA));
-            Date data_volta = DataConverter.converteStringToDate(bundle.getString(PassagemActivity.DATA_VOLTA));
+                Date data_ida = DataConverter.converteStringToDate(bundle.getString(PassagemActivity.DATA_IDA));
+                Date data_volta = DataConverter.converteStringToDate(bundle.getString(PassagemActivity.DATA_VOLTA));
 
-            int tipo = bundle.getInt(PassagemActivity.TIPO);
-            boolean bagagem = bundle.getBoolean(PassagemActivity.BAGAGEM);
+                int tipo = bundle.getInt(PassagemActivity.TIPO);
+                boolean bagagem = bundle.getBoolean(PassagemActivity.BAGAGEM);
 
-            Pais pais_entidade = new Pais(pais);
-            Passagem passagem = new Passagem(cidade, pais_entidade, data_ida, data_volta, TipoPassagem.verifica(tipo), bagagem);
+                TypedArray bandeiras = getResources()
+                        .obtainTypedArray(R.array.bandeiras_paises);
 
-            passagemLista.add(passagem);
+
+                Pais pais_entidade = new Pais(pais, bandeiras.getDrawable(bandeira));
+
+                passagemLista.add(new Passagem(cidade, pais_entidade, data_ida, data_volta, TipoPassagem.verifica(tipo), bagagem));
+                listaPassagensAdapter.notifyDataSetChanged();
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            listaPassagensAdapter.notifyDataSetChanged();
+
         }
     }
 }

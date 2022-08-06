@@ -47,4 +47,5 @@
     <string name="dados_app">O aplicativo foi projetado para gerenciar suas passagens, para que você possa cadastrar suas viagens e dados especificos.</string>
     <string name="pos_java">Pós Graduação em Desenvolvimento Java</string>
     <string name="curso">Curso:</string>
+    <string name="nova_passagem">Nova Passagem</string>
 </resources>

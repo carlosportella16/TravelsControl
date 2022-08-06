@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class ListaPassagensAdapter extends BaseAdapter {
     List<Passagem> passagens;
 
     private static class PassagensHolder{
-        public ImageView imageViewBandeira;
         public TextView textViewNomePais;
         public TextView textViewNomeCidade;
         public TextView textViewDataIda;
@@ -63,7 +61,6 @@ public class ListaPassagensAdapter extends BaseAdapter {
             holder = new PassagensHolder();
 
             holder.textViewNomePais = view.findViewById(R.id.textViewNomePaisLista);
-            holder.imageViewBandeira = view.findViewById(R.id.imageViewBandeiraLista);
             holder.textViewNomeCidade = view.findViewById(R.id.textViewNomeCidadeLista);
             holder.textViewDataIda = view.findViewById(R.id.textViewDataIdaLista);
             holder.textViewDataVolta = view.findViewById(R.id.textViewDataVoltaLista);
@@ -76,8 +73,6 @@ public class ListaPassagensAdapter extends BaseAdapter {
             holder = (PassagensHolder) view.getTag();
         }
 
-        //TODO passar dados corretos
-        holder.imageViewBandeira.setImageDrawable(passagens.get(i).getPais().getBandeira());
         holder.textViewNomePais.setText(passagens.get(i).getPais().getNome());
         holder.textViewNomeCidade.setText(passagens.get(i).getCidade());
         holder.textViewDataIda.setText(DataConverter.converteDateToString(passagens.get(i).getDataIda()));

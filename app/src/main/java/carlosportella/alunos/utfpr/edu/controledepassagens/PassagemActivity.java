@@ -27,16 +27,26 @@ public class PassagemActivity extends AppCompatActivity {
     public static final String DATA_VOLTA = "DATA_VOLTA";
     public static final String TIPO = "TIPO";
     public static final String BAGAGEM = "BAGAGEM";
+    public static final String BANDEIRA = "BANDEIRA";
 
     public static final int NOVO = 1;
+    public static final String MODO = "MODO";
+
 
     private EditText editTextCidade, editTextDataIda, editTextDataVolta;
     private CheckBox checkBoxBagagem;
     private RadioGroup radioGroupTipo;
     private Spinner spinnerPaises;
 
+    ArrayList<Pais> paises;
+    PaisAdapter paisAdapter;
+
+    private int modo;
+
     public static void novaPassagem(AppCompatActivity activity) {
         Intent intent = new Intent(activity, PassagemActivity.class);
+
+        intent.putExtra(MODO, NOVO);
 
         activity.startActivityForResult(intent, NOVO);
 
@@ -56,6 +66,14 @@ public class PassagemActivity extends AppCompatActivity {
         checkBoxBagagem = findViewById(R.id.checkBoxBagagem);
         radioGroupTipo = findViewById(R.id.RadioGroupTipo);
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+
+        if(bundle != null) {
+            modo = bundle.getInt(MODO, NOVO);
+            setTitle(getString(R.string.nova_passagem));
+        }
+
     }
 
     public void popularSpinner() {
@@ -65,13 +83,13 @@ public class PassagemActivity extends AppCompatActivity {
         TypedArray bandeiras = getResources()
                 .obtainTypedArray(R.array.bandeiras_paises);
 
-        ArrayList<Pais> paises = new ArrayList<>();
+        paises = new ArrayList<>();
 
         for (int cont = 0; cont < nomes.length; cont++) {
             paises.add(new Pais(nomes[cont], bandeiras.getDrawable(cont)));
         }
 
-        PaisAdapter paisAdapter = new PaisAdapter(this, paises);
+        paisAdapter = new PaisAdapter(this, paises);
         spinnerPaises.setAdapter(paisAdapter);
 
     }
@@ -145,10 +163,17 @@ public class PassagemActivity extends AppCompatActivity {
                 return;
         }
 
-        Intent intent = new Intent(this, PrincipalActivity.class);
+        Intent intent = new Intent();
 
         intent.putExtra(PassagemActivity.CIDADE, editTextCidade.getText().toString());
-        intent.putExtra(PassagemActivity.PAIS, (String) spinnerPaises.getSelectedItem());
+
+
+
+
+        intent.putExtra(PassagemActivity.PAIS, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
+
+        //TODO pegar bandeira correta
+        intent.putExtra(PassagemActivity.BANDEIRA, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
         intent.putExtra(PassagemActivity.DATA_IDA, editTextDataIda.getText().toString());
         intent.putExtra(PassagemActivity.DATA_VOLTA, editTextDataVolta.getText().toString());
         intent.putExtra(PassagemActivity.TIPO, tipoPassagem);
