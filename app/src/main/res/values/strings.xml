@@ -48,4 +48,5 @@
     <string name="pos_java">Pós Graduação em Desenvolvimento Java</string>
     <string name="curso">Curso:</string>
     <string name="nova_passagem">Nova Passagem</string>
+    <string name="alterar_passagem">Alterar Passagem</string>
 </resources>

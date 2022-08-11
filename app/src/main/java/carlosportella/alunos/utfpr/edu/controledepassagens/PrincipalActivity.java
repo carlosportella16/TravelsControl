@@ -1,13 +1,12 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,29 +24,66 @@ public class PrincipalActivity extends AppCompatActivity {
 
     private ListView listViewPassagens;
     private ArrayList<Passagem> passagemLista;
-    ListaPassagensAdapter listaPassagensAdapter;
+    private ListaPassagensAdapter listaPassagensAdapter;
+
+    private int posicaoSelecionada = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
         listViewPassagens = findViewById(R.id.listViewPassagens);
 
-        listViewPassagens.setOnItemClickListener((parent, view, position, id) -> {
+        listViewPassagens.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        posicaoSelecionada = position;
+                        alterarPassagem();
+                    }
+                }
+        );
 
-            Passagem passagem = passagemLista.get(position);
+        listViewPassagens.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-            Toast.makeText(getApplicationContext(), getString(R.string.passagem_para) +
-                            passagem.getCidade() +
-                            getString(R.string.traco)+
-                            passagem.getPais().getNome() +
-                            getString(R.string.foi_clicado),
-                    Toast.LENGTH_LONG).show();
-        });
+                        posicaoSelecionada = position;
+                        alterarPassagem();
+                        return true;
+                    }
+                }
+        );
 
         popularLista();
 
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.principal_opcoes, menu);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.menuItemAdicionar:
+//
+//                return true;
+//
+//            case R.id.menuItemSobre:
+//
+//                return true;
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 
     private void popularLista() {
@@ -55,6 +91,11 @@ public class PrincipalActivity extends AppCompatActivity {
         passagemLista = new ArrayList<>();
         listaPassagensAdapter = new ListaPassagensAdapter(this, passagemLista);
         listViewPassagens.setAdapter(listaPassagensAdapter);
+    }
+
+    private void alterarPassagem() {
+        Passagem passagem = passagemLista.get(posicaoSelecionada);
+        PassagemActivity.alterarPassagem(this, passagem);
     }
 
     public void adicionarPassagem(View view) {
@@ -65,10 +106,12 @@ public class PrincipalActivity extends AppCompatActivity {
         SobreActivity.sobre(this);
     }
 
-    @SuppressLint("MissingSuperCall")
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode,
+                                    int resultCode,
+                                    Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             try {
@@ -88,9 +131,22 @@ public class PrincipalActivity extends AppCompatActivity {
 
                 Pais pais_entidade = new Pais(pais, bandeiras.getDrawable(bandeira));
 
-                passagemLista.add(new Passagem(cidade, pais_entidade, data_ida, data_volta, TipoPassagem.verifica(tipo), bagagem));
-                listaPassagensAdapter.notifyDataSetChanged();
+                if (requestCode == PassagemActivity.ALTERAR) {
+                    Passagem passagem = passagemLista.get(posicaoSelecionada);
+                    passagem.setCidade(cidade);
+                    passagem.setPais(pais_entidade);
+                    passagem.setDataIda(data_ida);
+                    passagem.setDataVolta(data_volta);
+                    passagem.setTipoPassagem(TipoPassagem.verifica(tipo));
+                    passagem.setBagagem(bagagem);
 
+                    posicaoSelecionada = -1;
+                } else {
+                    Passagem passagem = new Passagem(cidade, pais_entidade, data_ida, data_volta, TipoPassagem.verifica(tipo), bagagem);
+                    passagemLista.add(passagem);
+                }
+
+                listaPassagensAdapter.notifyDataSetChanged();
             } catch (ParseException e) {
                 e.printStackTrace();
             }

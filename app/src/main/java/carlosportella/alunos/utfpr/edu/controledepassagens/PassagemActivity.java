@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.Pais;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.Passagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.TipoPassagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.adapter.PaisAdapter;
 
@@ -30,6 +32,8 @@ public class PassagemActivity extends AppCompatActivity {
     public static final String BANDEIRA = "BANDEIRA";
 
     public static final int NOVO = 1;
+    public static final int ALTERAR = 2;
+
     public static final String MODO = "MODO";
 
 
@@ -49,7 +53,19 @@ public class PassagemActivity extends AppCompatActivity {
         intent.putExtra(MODO, NOVO);
 
         activity.startActivityForResult(intent, NOVO);
+    }
 
+    public static void alterarPassagem(AppCompatActivity activity, Passagem passagem) {
+        Intent intent = new Intent(activity, PassagemActivity.class);
+
+        intent.putExtra(CIDADE, passagem.getCidade());
+        intent.putExtra(PAIS, passagem.getPais().getNome());
+        intent.putExtra(DATA_IDA, passagem.getDataIda());
+        intent.putExtra(DATA_VOLTA, passagem.getDataVolta());
+        intent.putExtra(TIPO, passagem.getTipoPassagem());
+        intent.putExtra(BAGAGEM, passagem.isBagagem().toString());
+
+        activity.startActivityForResult(intent, ALTERAR);
     }
 
     @Override
@@ -69,10 +85,56 @@ public class PassagemActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        if(bundle != null) {
+        if (bundle != null) {
+
             modo = bundle.getInt(MODO, NOVO);
-            setTitle(getString(R.string.nova_passagem));
+
+            if (modo == NOVO) {
+                setTitle(getString(R.string.nova_passagem));
+            } else {
+                String cidade = bundle.getString(CIDADE);
+                editTextCidade.setText(cidade);
+
+                String pais = bundle.getString(PAIS);
+
+                for (int pos = 0; 0 < spinnerPaises.getAdapter().getCount(); pos++) {
+                    String valor = (String) spinnerPaises.getItemAtPosition(pos);
+
+                    if (valor.equals(pais)) {
+                        spinnerPaises.setSelection(pos);
+                        break;
+                    }
+                }
+
+                String dataIda = bundle.getString(DATA_IDA);
+                editTextDataIda.setText(dataIda);
+
+                String dataVolta = bundle.getString(DATA_VOLTA);
+                editTextDataVolta.setText(dataVolta);
+
+                int tipo = bundle.getInt(TIPO);
+
+                RadioButton button;
+                switch (tipo) {
+                    case TipoPassagem.AEREO:
+                        button = findViewById(R.id.radioButtonAereo);
+                        button.setChecked(true);
+                        break;
+
+                    case TipoPassagem.RODOVIARIO:
+                        button = findViewById(R.id.radioButtonRodoviario);
+                        button.setChecked(true);
+                        break;
+                }
+
+                boolean bagagem = bundle.getBoolean(BAGAGEM);
+                checkBoxBagagem.setChecked(bagagem);
+
+                setTitle(getString(R.string.alterar_passagem));
+            }
+
         }
+        editTextCidade.requestFocus();
 
     }
 
@@ -157,34 +219,29 @@ public class PassagemActivity extends AppCompatActivity {
                 tipoPassagem = TipoPassagem.AEREO;
                 break;
 
-            default:Toast.makeText(this,
-                    R.string.selecionar_tipo_transporte,
-                    Toast.LENGTH_LONG).show();
+            default:
+                Toast.makeText(this,
+                        R.string.selecionar_tipo_transporte,
+                        Toast.LENGTH_LONG).show();
                 return;
         }
 
         Intent intent = new Intent();
 
-        intent.putExtra(PassagemActivity.CIDADE, editTextCidade.getText().toString());
-
-
-
-
-        intent.putExtra(PassagemActivity.PAIS, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
-
-        //TODO pegar bandeira correta
-        intent.putExtra(PassagemActivity.BANDEIRA, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
-        intent.putExtra(PassagemActivity.DATA_IDA, editTextDataIda.getText().toString());
-        intent.putExtra(PassagemActivity.DATA_VOLTA, editTextDataVolta.getText().toString());
-        intent.putExtra(PassagemActivity.TIPO, tipoPassagem);
-        intent.putExtra(PassagemActivity.BAGAGEM, checkBoxBagagem.isChecked());
+        intent.putExtra(CIDADE, editTextCidade.getText().toString());
+        intent.putExtra(PAIS, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
+        intent.putExtra(BANDEIRA, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
+        intent.putExtra(DATA_IDA, editTextDataIda.getText().toString());
+        intent.putExtra(DATA_VOLTA, editTextDataVolta.getText().toString());
+        intent.putExtra(TIPO, tipoPassagem);
+        intent.putExtra(BAGAGEM, checkBoxBagagem.isChecked());
 
         setResult(Activity.RESULT_OK, intent);
 
         finish();
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         setResult(Activity.RESULT_CANCELED);
         finish();
     }
