@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
@@ -35,29 +38,9 @@ public class PrincipalActivity extends AppCompatActivity {
 
         listViewPassagens = findViewById(R.id.listViewPassagens);
 
-        listViewPassagens.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        posicaoSelecionada = position;
-                        alterarPassagem();
-                    }
-                }
-        );
-
-        listViewPassagens.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                        posicaoSelecionada = position;
-                        alterarPassagem();
-                        return true;
-                    }
-                }
-        );
-
         popularLista();
+
+        registerForContextMenu(listViewPassagens);
 
     }
 
@@ -93,9 +76,18 @@ public class PrincipalActivity extends AppCompatActivity {
         listViewPassagens.setAdapter(listaPassagensAdapter);
     }
 
-    private void alterarPassagem() {
-        Passagem passagem = passagemLista.get(posicaoSelecionada);
+    private void alterarPassagem(int posicao) {
+        Passagem passagem = passagemLista.get(posicao);
+
         PassagemActivity.alterarPassagem(this, passagem);
+        posicaoSelecionada = posicao;
+
+    }
+
+    private void excluir(int posicao) {
+        passagemLista.remove(posicao);
+
+        listaPassagensAdapter.notifyDataSetChanged();
     }
 
     public void adicionarPassagem(View view) {
@@ -151,6 +143,33 @@ public class PrincipalActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getMenuInflater().inflate(R.menu.principal_menu_contexto_flutuante, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info;
+
+        info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.menuItemAlterar:
+                alterarPassagem(info.position);
+                return true;
+
+            case R.id.menuItemExcluir:
+                excluir(info.position);
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 }

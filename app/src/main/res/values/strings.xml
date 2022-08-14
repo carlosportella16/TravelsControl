@@ -49,4 +49,6 @@
     <string name="curso">Curso:</string>
     <string name="nova_passagem">Nova Passagem</string>
     <string name="alterar_passagem">Alterar Passagem</string>
+    <string name="alterar">Alterar</string>
+    <string name="excluir">Excluir</string>
 </resources>
