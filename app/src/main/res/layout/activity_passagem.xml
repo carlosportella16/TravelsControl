@@ -133,30 +133,5 @@
                 android:text="@string/aereo" />
         </RadioGroup>
 
-        <Button
-            android:id="@+id/buttonSalvar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:onClick="salvar"
-            android:text="@string/salvar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/RadioGroupTipo"
-            tools:ignore="UsingOnClickInXml" />
-
-        <Button
-            android:id="@+id/buttonLimpar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:onClick="limparCampos"
-            android:text="@string/limpar"
-            app:layout_constraintStart_toEndOf="@+id/buttonSalvar"
-            app:layout_constraintTop_toTopOf="@+id/buttonSalvar"
-            tools:ignore="UsingOnClickInXml" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

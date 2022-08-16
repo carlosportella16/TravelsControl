@@ -5,11 +5,9 @@
     <item
         android:id="@+id/menuItemAdicionar"
         android:icon="@android:drawable/ic_menu_add"
-        android:onClick="limparCampos"
         android:title="@string/adicionar"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menuItemSobre"
-        android:onClick="abrirSobre"
         android:title="@string/sobre" />
 </menu>

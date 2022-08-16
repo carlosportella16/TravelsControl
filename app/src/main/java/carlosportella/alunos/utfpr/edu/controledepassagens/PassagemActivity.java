@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -12,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ public class PassagemActivity extends AppCompatActivity {
     public static final String DATA_VOLTA = "DATA_VOLTA";
     public static final String TIPO = "TIPO";
     public static final String BAGAGEM = "BAGAGEM";
-    public static final String BANDEIRA = "BANDEIRA";
 
     public static final int NOVO = 1;
     public static final int ALTERAR = 2;
@@ -58,6 +59,7 @@ public class PassagemActivity extends AppCompatActivity {
     public static void alterarPassagem(AppCompatActivity activity, Passagem passagem) {
         Intent intent = new Intent(activity, PassagemActivity.class);
 
+        intent.putExtra(MODO, ALTERAR);
         intent.putExtra(CIDADE, passagem.getCidade());
         intent.putExtra(PAIS, passagem.getPais().getNome());
         intent.putExtra(DATA_IDA, passagem.getDataIda());
@@ -72,6 +74,11 @@ public class PassagemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passagem);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         editTextCidade = findViewById(R.id.editTextCidade);
         spinnerPaises = findViewById(R.id.spinnerPais);
@@ -156,7 +163,7 @@ public class PassagemActivity extends AppCompatActivity {
 
     }
 
-    public void limparCampos(View view) {
+    public void limparCampos() {
         editTextCidade.setText(null);
         editTextDataIda.setText(null);
         editTextDataVolta.setText(null);
@@ -171,10 +178,11 @@ public class PassagemActivity extends AppCompatActivity {
 
     }
 
-    public void salvar(View view) {
+    public void salvar() {
 
+        String cidade = editTextCidade.getText().toString();
         // Verifica se o campo Cidade está em branco
-        if (editTextCidade == null || editTextCidade.getText().toString().trim().isEmpty()) {
+        if (cidade == null || cidade.trim().isEmpty()) {
             Toast.makeText(this,
                     R.string.destino_em_branco,
                     Toast.LENGTH_LONG).show();
@@ -190,8 +198,9 @@ public class PassagemActivity extends AppCompatActivity {
             return;
         }
 
+        String dataIda = editTextDataIda.getText().toString();
         // Verifica se o campo Data está em branco
-        if (editTextDataIda == null || editTextDataIda.getText().toString().trim().isEmpty()) {
+        if (dataIda == null || dataIda.trim().isEmpty()) {
             Toast.makeText(this,
                     R.string.data_ida_em_branco,
                     Toast.LENGTH_LONG).show();
@@ -199,7 +208,8 @@ public class PassagemActivity extends AppCompatActivity {
             return;
         }
 
-        if (editTextDataVolta == null || editTextDataVolta.getText().toString().trim().isEmpty()) {
+        String dataVolta = editTextDataVolta.getText().toString();
+        if (dataVolta == null || dataVolta.trim().isEmpty()) {
             Toast.makeText(this,
                     R.string.data_volta_em_branco,
                     Toast.LENGTH_LONG).show();
@@ -226,24 +236,58 @@ public class PassagemActivity extends AppCompatActivity {
                 return;
         }
 
+        boolean bagagem = checkBoxBagagem.isChecked();
+
+        String pais = paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString();
         Intent intent = new Intent();
 
-        intent.putExtra(CIDADE, editTextCidade.getText().toString());
-        intent.putExtra(PAIS, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
-        intent.putExtra(BANDEIRA, paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString());
-        intent.putExtra(DATA_IDA, editTextDataIda.getText().toString());
-        intent.putExtra(DATA_VOLTA, editTextDataVolta.getText().toString());
+        intent.putExtra(CIDADE, cidade);
+        intent.putExtra(PAIS, pais);
+        intent.putExtra(DATA_IDA, dataIda);
+        intent.putExtra(DATA_VOLTA, dataVolta);
         intent.putExtra(TIPO, tipoPassagem);
-        intent.putExtra(BAGAGEM, checkBoxBagagem.isChecked());
+        intent.putExtra(BAGAGEM, bagagem);
 
         setResult(Activity.RESULT_OK, intent);
 
         finish();
     }
 
-    public void onBackPressed() {
+    public void cancelar(){
         setResult(Activity.RESULT_CANCELED);
         finish();
+    }
+
+    public void onBackPressed() {
+        cancelar();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.passagem_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+
+            case R.id.menuItemSalvar:
+                salvar();
+                return true;
+
+            case android.R.id.home:
+                cancelar();
+                return true;
+
+            case R.id.menuItemLimpar:
+                limparCampos();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
