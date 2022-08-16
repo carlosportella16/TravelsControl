@@ -102,17 +102,6 @@ public class PassagemActivity extends AppCompatActivity {
                 String cidade = bundle.getString(CIDADE);
                 editTextCidade.setText(cidade);
 
-                String pais = bundle.getString(PAIS);
-
-                for (int pos = 0; 0 < spinnerPaises.getAdapter().getCount(); pos++) {
-                    String valor = (String) spinnerPaises.getItemAtPosition(pos);
-
-                    if (valor.equals(pais)) {
-                        spinnerPaises.setSelection(pos);
-                        break;
-                    }
-                }
-
                 String dataIda = bundle.getString(DATA_IDA);
                 editTextDataIda.setText(dataIda);
 
@@ -136,6 +125,8 @@ public class PassagemActivity extends AppCompatActivity {
 
                 boolean bagagem = bundle.getBoolean(BAGAGEM);
                 checkBoxBagagem.setChecked(bagagem);
+
+                spinnerPaises.setSelection(spinnerPaises.getSelectedItemPosition());
 
                 setTitle(getString(R.string.alterar_passagem));
             }

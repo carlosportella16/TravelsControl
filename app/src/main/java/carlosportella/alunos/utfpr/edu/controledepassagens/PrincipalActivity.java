@@ -228,9 +228,4 @@ public class PrincipalActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
-
-
 }
