@@ -7,7 +7,25 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/adicionar"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/menuItemSobre"
         android:title="@string/sobre" />
+    <item
+        android:id="@+id/subMenuPreferencias"
+        android:title="@string/exibir_por" >
+        <menu >
+            <group
+                android:id="@+id/groupOrdenar"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menuItemOrdenarData"
+                    android:title="@string/data_ida" />
+                <item
+                    android:id="@+id/menuItemOrdenarCidade"
+                    android:title="@string/cidade" />
+            </group>
+        </menu>
+    </item>
+
 </menu>

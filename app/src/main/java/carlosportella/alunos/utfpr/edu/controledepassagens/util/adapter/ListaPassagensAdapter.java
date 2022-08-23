@@ -11,6 +11,7 @@ import java.util.List;
 
 import carlosportella.alunos.utfpr.edu.controledepassagens.R;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.Passagem;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.TipoPassagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.DataConverter;
 
 public class ListaPassagensAdapter extends BaseAdapter {
@@ -73,13 +74,28 @@ public class ListaPassagensAdapter extends BaseAdapter {
             holder = (PassagensHolder) view.getTag();
         }
 
+        String bagagem = "";
+
+
+        if(passagens.get(i).isBagagem()) {
+            bagagem = context.getString(R.string.bagagem_comprada);
+        } else {
+            bagagem = context.getString(R.string.sem_bagagem);
+        }
+
+        String tipo = "";
+        if(passagens.get(i).getTipoPassagem().equals(TipoPassagem.RODOVIÁRIO)) {
+            tipo = context.getString(R.string.rodoviario);
+        } else {
+            tipo = context.getString(R.string.aereo);
+        }
+
         holder.textViewNomePais.setText(passagens.get(i).getPais().getNome());
         holder.textViewNomeCidade.setText(passagens.get(i).getCidade());
         holder.textViewDataIda.setText(DataConverter.converteDateToString(passagens.get(i).getDataIda()));
         holder.textViewDataVolta.setText(DataConverter.converteDateToString(passagens.get(i).getDataVolta()));
-        holder.textViewTipoPassagem.setText(passagens.get(i).getTipoPassagem().toString());
-        holder.textViewBagagem.setText(passagens.get(i).isBagagem().toString());
-
+        holder.textViewTipoPassagem.setText(tipo);
+        holder.textViewBagagem.setText(bagagem);
 
         return view;
     }

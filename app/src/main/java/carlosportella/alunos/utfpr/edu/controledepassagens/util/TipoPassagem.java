@@ -7,7 +7,7 @@ public enum TipoPassagem {
     public static final int RODOVIARIO = 1;
     public static final int AEREO = 2;
 
-    public static TipoPassagem verifica(int value) {
+    public static TipoPassagem verificaPassagem(int value) {
         if(value == 1) {
             return RODOVIÁRIO;
         }

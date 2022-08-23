@@ -1,8 +1,11 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 
@@ -23,6 +27,8 @@ import carlosportella.alunos.utfpr.edu.controledepassagens.util.Passagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.TipoPassagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.adapter.ListaPassagensAdapter;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.DataConverter;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.PassagemComparatorCidade;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.PassagemComparatorDataIda;
 
 public class PrincipalActivity extends AppCompatActivity {
 
@@ -33,6 +39,15 @@ public class PrincipalActivity extends AppCompatActivity {
     private int posicaoSelecionada = -1;
     private ActionMode actionMode;
     private View viewSelecionada;
+
+    private static final String ARQUIVO =
+            "carlosportella.alunos.utfpr.edu.controledepassagens.PREFERENCIA_ORDEM_LISTA";
+
+    private static final int ORDENAR_DATA = 1;
+    private static final int ORDENAR_CIDADE = 2;
+    private int opcao = -1;
+    private static final String ORDEM = "ORDEM";
+
 
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -83,6 +98,8 @@ public class PrincipalActivity extends AppCompatActivity {
         }
     };
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +151,10 @@ public class PrincipalActivity extends AppCompatActivity {
                 });
 
         popularLista();
+
+        lerPreferencia();
+
+        setTitle(getString(R.string.controle_de_passagens));
     }
 
     private void popularLista() {
@@ -183,7 +204,7 @@ public class PrincipalActivity extends AppCompatActivity {
                     passagem.setPais(pais_entidade);
                     passagem.setDataIda(data_ida);
                     passagem.setDataVolta(data_volta);
-                    passagem.setTipoPassagem(TipoPassagem.verifica(tipo));
+                    passagem.setTipoPassagem(TipoPassagem.verificaPassagem(tipo));
                     passagem.setBagagem(bagagem);
 
                     posicaoSelecionada = -1;
@@ -192,7 +213,7 @@ public class PrincipalActivity extends AppCompatActivity {
                             pais_entidade,
                             data_ida,
                             data_volta,
-                            TipoPassagem.verifica(tipo),
+                            TipoPassagem.verificaPassagem(tipo),
                             bagagem);
 
                     passagemLista.add(passagem);
@@ -212,6 +233,7 @@ public class PrincipalActivity extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -224,8 +246,81 @@ public class PrincipalActivity extends AppCompatActivity {
                 SobreActivity.sobre(this);
                 return true;
 
+            case R.id.menuItemOrdenarData:
+                salvarPreferenciaLista(ORDENAR_DATA);
+                item.setChecked(true);
+
+                return true;
+
+            case R.id.menuItemOrdenarCidade:
+                salvarPreferenciaLista(ORDENAR_CIDADE);
+                item.setChecked(true);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // ----- SHAREDPREFERENCES -------
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void lerPreferencia(){
+        SharedPreferences shared = getSharedPreferences(ARQUIVO,
+                Context.MODE_PRIVATE);
+
+        opcao = shared.getInt(ORDEM, opcao);
+
+        ordenarLista();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void salvarPreferenciaLista(int novoValor){
+        SharedPreferences shared = getSharedPreferences(ARQUIVO,
+                Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = shared.edit();
+
+        editor.putInt(ORDEM, novoValor);
+        editor.commit();
+
+        opcao = novoValor;
+
+        ordenarLista();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void ordenarLista(){
+        if(opcao==1) {
+            passagemLista.sort(new PassagemComparatorDataIda());
+            listaPassagensAdapter.notifyDataSetChanged();
+        } else if(opcao==2) {
+            passagemLista.sort(new PassagemComparatorCidade());
+            listaPassagensAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem item;
+
+        switch(opcao){
+
+            case 1:
+                item = menu.findItem(R.id.menuItemOrdenarData);
+                break;
+
+            case 2:
+                item = menu.findItem(R.id.menuItemOrdenarCidade);
+                break;
+
+            default:
+                return false;
+        }
+
+        item.setChecked(true);
+        return true;
+
     }
 }

@@ -65,7 +65,7 @@ public class PassagemActivity extends AppCompatActivity {
         intent.putExtra(DATA_IDA, passagem.getDataIda());
         intent.putExtra(DATA_VOLTA, passagem.getDataVolta());
         intent.putExtra(TIPO, passagem.getTipoPassagem());
-        intent.putExtra(BAGAGEM, passagem.isBagagem().toString());
+        intent.putExtra(BAGAGEM, passagem.isBagagem());
 
         activity.startActivityForResult(intent, ALTERAR);
     }
@@ -208,16 +208,16 @@ public class PassagemActivity extends AppCompatActivity {
             return;
         }
 
-        int tipoPassagem;
+        TipoPassagem tipoPassagem;
 
         // Verifica radioButton
         switch (radioGroupTipo.getCheckedRadioButtonId()) {
             case R.id.radioButtonRodoviario:
-                tipoPassagem = TipoPassagem.RODOVIARIO;
+                tipoPassagem = TipoPassagem.RODOVIÁRIO;
                 break;
 
             case R.id.radioButtonAereo:
-                tipoPassagem = TipoPassagem.AEREO;
+                tipoPassagem = TipoPassagem.AÉREO;
                 break;
 
             default:

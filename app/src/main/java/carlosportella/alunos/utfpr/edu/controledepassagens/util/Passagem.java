@@ -1,10 +1,9 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens.util;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Passagem {
-
-
 
     private String cidade;
     private Pais pais;
@@ -63,11 +62,11 @@ public class Passagem {
         this.tipoPassagem = tipoPassagem;
     }
 
-    public Object isBagagem() {
+    public boolean isBagagem() {
         if (bagagem) {
-            return "Bagagem comprada";
+            return true;
         } else {
-            return "Sem bagagem";
+            return false;
         }
 
     }
@@ -77,16 +76,16 @@ public class Passagem {
     }
 
     @Override
-    public String toString() {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passagem passagem = (Passagem) o;
+        return cidade.equals(passagem.cidade) && pais.equals(passagem.pais) && dataIda.equals(passagem.dataIda);
+    }
 
-        return "Passagem{" +
-                "cidade='" + cidade + '\'' +
-                ", pais=" + pais +
-                ", dataIda=" + dataIda +
-                ", dataVolta=" + dataVolta +
-                ", tipoPassagem=" + tipoPassagem +
-                ", bagagem=" + bagagem +
-                '}';
+    @Override
+    public int hashCode() {
+        return Objects.hash(cidade, pais, dataIda);
     }
 }
 
