@@ -248,13 +248,10 @@ public class PrincipalActivity extends AppCompatActivity {
 
             case R.id.menuItemOrdenarData:
                 salvarPreferenciaLista(ORDENAR_DATA);
-                item.setChecked(true);
-
                 return true;
 
             case R.id.menuItemOrdenarCidade:
                 salvarPreferenciaLista(ORDENAR_CIDADE);
-                item.setChecked(true);
                 return true;
 
             default:

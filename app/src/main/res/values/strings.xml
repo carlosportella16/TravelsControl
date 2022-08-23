@@ -54,5 +54,5 @@
     <string name="controle_de_passagens">Ticket Control</string>
     <string name="bagagem_comprada">Baggage purchased</string>
     <string name="sem_bagagem">No baggage</string>
-    <string name="exibir_por">Exibir Por:</string>
+    <string name="exibir_por">Sort by:</string>
 </resources>
