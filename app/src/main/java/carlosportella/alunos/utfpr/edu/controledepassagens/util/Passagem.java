@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Passagem {
 
+    private Long id;
     private String cidade;
     private Pais pais;
     private Date dataIda;
@@ -21,6 +22,13 @@ public class Passagem {
         this.bagagem = bagagem;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCidade() {
         return cidade;
