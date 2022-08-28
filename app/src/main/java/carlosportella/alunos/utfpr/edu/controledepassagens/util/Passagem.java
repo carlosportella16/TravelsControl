@@ -22,6 +22,10 @@ public class Passagem {
         this.bagagem = bagagem;
     }
 
+    public Passagem(String cidade) {
+        this.cidade = cidade;
+    }
+
     public Long getId() {
         return id;
     }

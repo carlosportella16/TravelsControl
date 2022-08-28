@@ -1,12 +1,16 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens.util.persistencia;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.Pais;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.Passagem;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.TipoPassagem;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.data.DataConverter;
 
 public class PassagemDAO {
@@ -98,6 +102,40 @@ public class PassagemDAO {
     }
 
     //TODO carregarTudo
+    public void carregarTudo() throws ParseException {
+
+        lista.clear();
+
+        String sql = "SELECT * FROM " + TABELA + " ORDER BY " + CIDADE;
+
+        Cursor cursor = conexao.getReadableDatabase().rawQuery(sql, null);
+
+        int colunaCidade = cursor.getColumnIndex(CIDADE);
+        int colunaId = cursor.getColumnIndex(ID);
+        int colunaPais = cursor.getColumnIndex(PAIS);
+        int colunaDataIda = cursor.getColumnIndex(DATA_IDA);
+        int colunaDataVolta = cursor.getColumnIndex(DATA_VOLTA);
+        int colunaTipoPassagem = cursor.getColumnIndex(TIPO_PASSAGEM);
+        int colunaBagagem = cursor.getColumnIndex(BAGAGEM);
+
+        while(cursor.moveToNext()) {
+            Passagem passagem = new Passagem(cursor.getString(colunaCidade));
+            Pais pais = new Pais();
+            pais.setNome(cursor.getString(colunaPais));
+
+            passagem.setId(cursor.getLong(colunaId));
+            passagem.setPais(pais);
+            passagem.setDataIda(DataConverter.converteStringToDate(cursor.getString(colunaDataIda)));
+            passagem.setDataVolta(DataConverter.converteStringToDate(cursor.getString(colunaDataVolta)));
+            passagem.setTipoPassagem(TipoPassagem.valueOf(cursor.getString(colunaTipoPassagem)));
+            passagem.setBagagem(Boolean.parseBoolean(cursor.getString(colunaBagagem)));
+
+            lista.add(passagem);
+        }
+
+        cursor.close();
+
+    }
 
     //TODO passagemPorID
     public Passagem passagemPorId(long id) {
