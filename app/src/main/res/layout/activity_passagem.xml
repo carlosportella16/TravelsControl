@@ -37,25 +37,24 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewDestino"
             tools:ignore="LabelFor" />
 
-        <Spinner
-            android:id="@+id/spinnerPais"
-            android:layout_width="261dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:spinnerMode="dialog"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPais" />
-
         <TextView
             android:id="@+id/textViewPais"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/selecione_pais"
+            android:text="@string/country"
             app:layout_constraintStart_toStartOf="@+id/editTextCidade"
             app:layout_constraintTop_toBottomOf="@+id/editTextCidade" />
+
+        <EditText
+            android:id="@+id/editTextPais"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="@+id/textViewPais"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPais" />
 
         <CheckBox
             android:id="@+id/checkBoxBagagem"
@@ -74,8 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/data_ida"
-            app:layout_constraintStart_toStartOf="@+id/spinnerPais"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerPais" />
+            app:layout_constraintStart_toStartOf="@+id/editTextPais"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPais" />
 
         <EditText
             android:id="@+id/editTextDataIda"
@@ -84,6 +83,7 @@
             android:layout_marginTop="8dp"
             android:autofillHints=""
             android:ems="10"
+            android:hint="dd/MM/yyyy"
             android:inputType="date"
             android:minHeight="48dp"
             app:layout_constraintStart_toStartOf="@+id/textViewIda"
@@ -106,6 +106,7 @@
             android:layout_marginTop="8dp"
             android:autofillHints=""
             android:ems="10"
+            android:hint="dd/MM/yyyy"
             android:inputType="date|datetime"
             android:minHeight="48dp"
             app:layout_constraintStart_toStartOf="@+id/textViewVolta"

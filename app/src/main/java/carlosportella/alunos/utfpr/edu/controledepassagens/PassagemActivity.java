@@ -2,7 +2,6 @@ package carlosportella.alunos.utfpr.edu.controledepassagens;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,64 +9,45 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import java.text.ParseException;
 
-import carlosportella.alunos.utfpr.edu.controledepassagens.util.Pais;
 import carlosportella.alunos.utfpr.edu.controledepassagens.util.Passagem;
-import carlosportella.alunos.utfpr.edu.controledepassagens.util.TipoPassagem;
-import carlosportella.alunos.utfpr.edu.controledepassagens.util.adapter.PaisAdapter;
+import carlosportella.alunos.utfpr.edu.controledepassagens.util.persistencia.PassagemDatabase;
 
 public class PassagemActivity extends AppCompatActivity {
 
-    public static final String CIDADE = "CIDADE";
-    public static final String PAIS = "PAIS";
-    public static final String DATA_IDA = "DATA_IDA";
-    public static final String DATA_VOLTA = "DATA_VOLTA";
-    public static final String TIPO = "TIPO";
-    public static final String BAGAGEM = "BAGAGEM";
-
+    public static final String MODO = "MODO";
+    public static final String ID = "ID";
     public static final int NOVO = 1;
     public static final int ALTERAR = 2;
 
-    public static final String MODO = "MODO";
-
-
-    private EditText editTextCidade, editTextDataIda, editTextDataVolta;
-    private CheckBox checkBoxBagagem;
+    private EditText editTextCidade, editTextPais, editTextDataIda, editTextDataVolta;
     private RadioGroup radioGroupTipo;
-    private Spinner spinnerPaises;
-
-    ArrayList<Pais> paises;
-    PaisAdapter paisAdapter;
+    private CheckBox checkBoxBagagem;
 
     private int modo;
+    private Passagem passagem;
 
-    public static void novaPassagem(AppCompatActivity activity) {
+    public static void novaPassagem(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, PassagemActivity.class);
 
         intent.putExtra(MODO, NOVO);
 
-        activity.startActivityForResult(intent, NOVO);
+        activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void alterarPassagem(AppCompatActivity activity, Passagem passagem) {
+    public static void alterarPassagem(Activity activity, int requestCode, Passagem passagem) {
         Intent intent = new Intent(activity, PassagemActivity.class);
 
         intent.putExtra(MODO, ALTERAR);
-        intent.putExtra(CIDADE, passagem.getCidade());
-        intent.putExtra(PAIS, passagem.getPais().getNome());
-        intent.putExtra(DATA_IDA, passagem.getDataIda());
-        intent.putExtra(DATA_VOLTA, passagem.getDataVolta());
-        intent.putExtra(TIPO, passagem.getTipoPassagem());
-        intent.putExtra(BAGAGEM, passagem.isBagagem());
+        intent.putExtra(ID, passagem.getId());
 
-        activity.startActivityForResult(intent, ALTERAR);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -81,9 +61,7 @@ public class PassagemActivity extends AppCompatActivity {
         }
 
         editTextCidade = findViewById(R.id.editTextCidade);
-        spinnerPaises = findViewById(R.id.spinnerPais);
-        popularSpinner();
-
+        editTextPais = findViewById(R.id.editTextPais);
         editTextDataIda = findViewById(R.id.editTextDataIda);
         editTextDataVolta = findViewById(R.id.editTextDataVolta);
         checkBoxBagagem = findViewById(R.id.checkBoxBagagem);
@@ -92,75 +70,57 @@ public class PassagemActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        if (bundle != null) {
-
             modo = bundle.getInt(MODO, NOVO);
 
-            if (modo == NOVO) {
-                setTitle(getString(R.string.nova_passagem));
-            } else {
-                String cidade = bundle.getString(CIDADE);
-                editTextCidade.setText(cidade);
+            if (modo == ALTERAR) {
+                setTitle(getString(R.string.alterar_passagem));
 
-                String dataIda = bundle.getString(DATA_IDA);
-                editTextDataIda.setText(dataIda);
+                long id = bundle.getLong(ID);
 
-                String dataVolta = bundle.getString(DATA_VOLTA);
-                editTextDataVolta.setText(dataVolta);
+                PassagemDatabase database = PassagemDatabase.getDatabase(this);
 
-                int tipo = bundle.getInt(TIPO);
+                passagem = database.passagemDao().queryForId(id);
+
+                editTextCidade.setText(passagem.getCidade());
+                editTextPais.setText(passagem.getPais());
+                editTextDataIda.setText(passagem.getDataIda());
+                editTextDataVolta.setText(passagem.getDataVolta());
+
+                int tipo = passagem.getTipoPassagem();
 
                 RadioButton button;
                 switch (tipo) {
-                    case TipoPassagem.AEREO:
+                    case Passagem.AEREO:
                         button = findViewById(R.id.radioButtonAereo);
                         button.setChecked(true);
                         break;
 
-                    case TipoPassagem.RODOVIARIO:
+                    case Passagem.RODOVIARIO:
                         button = findViewById(R.id.radioButtonRodoviario);
                         button.setChecked(true);
                         break;
                 }
 
-                boolean bagagem = bundle.getBoolean(BAGAGEM);
-                checkBoxBagagem.setChecked(bagagem);
 
-                spinnerPaises.setSelection(spinnerPaises.getSelectedItemPosition());
+                checkBoxBagagem.setChecked(passagem.isBagagem());
 
-                setTitle(getString(R.string.alterar_passagem));
+            } else {
+
+                setTitle(getString(R.string.nova_passagem));
+
+                passagem = new Passagem("");
+
             }
-
-        }
-        editTextCidade.requestFocus();
-
-    }
-
-    public void popularSpinner() {
-
-        String[] nomes = getResources()
-                .getStringArray(R.array.nomes_paises);
-        TypedArray bandeiras = getResources()
-                .obtainTypedArray(R.array.bandeiras_paises);
-
-        paises = new ArrayList<>();
-
-        for (int cont = 0; cont < nomes.length; cont++) {
-            paises.add(new Pais(nomes[cont], bandeiras.getDrawable(cont)));
-        }
-
-        paisAdapter = new PaisAdapter(this, paises);
-        spinnerPaises.setAdapter(paisAdapter);
 
     }
 
     public void limparCampos() {
         editTextCidade.setText(null);
+        editTextPais.setText(null);
         editTextDataIda.setText(null);
         editTextDataVolta.setText(null);
         checkBoxBagagem.setChecked(false);
         radioGroupTipo.clearCheck();
-        popularSpinner();
 
         Toast.makeText(this,
                 R.string.os_campos_foram_limpos,
@@ -169,7 +129,7 @@ public class PassagemActivity extends AppCompatActivity {
 
     }
 
-    public void salvar() {
+    public void salvar() throws ParseException {
 
         String cidade = editTextCidade.getText().toString();
         // Verifica se o campo Cidade está em branco
@@ -181,10 +141,12 @@ public class PassagemActivity extends AppCompatActivity {
             return;
         }
 
+        String pais = editTextPais.getText().toString();
+        //TODO pegar string
         // Verifica se o País foi selecionado
-        if (spinnerPaises.getSelectedItemPosition() == 0) {
+        if (pais == null || pais.trim().isEmpty()) {
             Toast.makeText(this,
-                    R.string.selecione_o_pais_que_ira_viajar,
+                    "O pais nao pode estar em branco",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -208,16 +170,16 @@ public class PassagemActivity extends AppCompatActivity {
             return;
         }
 
-        TipoPassagem tipoPassagem;
+        int tipoPassagem;
 
         // Verifica radioButton
         switch (radioGroupTipo.getCheckedRadioButtonId()) {
             case R.id.radioButtonRodoviario:
-                tipoPassagem = TipoPassagem.RODOVIÁRIO;
+                tipoPassagem = Passagem.RODOVIARIO;
                 break;
 
             case R.id.radioButtonAereo:
-                tipoPassagem = TipoPassagem.AÉREO;
+                tipoPassagem = Passagem.AEREO;
                 break;
 
             default:
@@ -229,15 +191,23 @@ public class PassagemActivity extends AppCompatActivity {
 
         boolean bagagem = checkBoxBagagem.isChecked();
 
-        String pais = paisAdapter.getItem(spinnerPaises.getSelectedItemPosition()).toString();
+
         Intent intent = new Intent();
 
-        intent.putExtra(CIDADE, cidade);
-        intent.putExtra(PAIS, pais);
-        intent.putExtra(DATA_IDA, dataIda);
-        intent.putExtra(DATA_VOLTA, dataVolta);
-        intent.putExtra(TIPO, tipoPassagem);
-        intent.putExtra(BAGAGEM, bagagem);
+        passagem.setCidade(cidade);
+        passagem.setPais(pais);
+        passagem.setDataIda(dataIda);
+        passagem.setDataVolta(dataVolta);
+        passagem.setTipoPassagem(tipoPassagem);
+        passagem.setBagagem(bagagem);
+
+        PassagemDatabase database = PassagemDatabase.getDatabase(this);
+
+        if(modo == NOVO) {
+            database.passagemDao().insert(passagem);
+        } else {
+            database.passagemDao().update(passagem);
+        }
 
         setResult(Activity.RESULT_OK, intent);
 
@@ -265,7 +235,11 @@ public class PassagemActivity extends AppCompatActivity {
         switch(item.getItemId()){
 
             case R.id.menuItemSalvar:
-                salvar();
+                try {
+                    salvar();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 return true;
 
             case android.R.id.home:

@@ -55,4 +55,5 @@
     <string name="bagagem_comprada">Baggage purchased</string>
     <string name="sem_bagagem">No baggage</string>
     <string name="exibir_por">Sort by:</string>
+    <string name="country">County</string>
 </resources>

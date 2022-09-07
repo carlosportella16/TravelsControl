@@ -1,25 +1,30 @@
 package carlosportella.alunos.utfpr.edu.controledepassagens.util;
 
-import java.util.Date;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Objects;
 
+
+@Entity
 public class Passagem {
 
+    public static final int AEREO = 1;
+    public static final int RODOVIARIO = 2;
+
+    @PrimaryKey(autoGenerate = true)
     private Long id;
+
     private String cidade;
-    private Pais pais;
-    private Date dataIda;
-    private Date dataVolta;
-    private TipoPassagem tipoPassagem;
+    private String pais;
+
+    private String dataIda;
+    private String dataVolta;
+    private int tipoPassagem;
     private boolean bagagem;
 
-    public Passagem(String cidade, Pais pais, Date dataIda, Date dataVolta, TipoPassagem tipoPassagem, boolean bagagem) {
-        this.cidade = cidade;
-        this.pais = pais;
-        this.dataIda = dataIda;
-        this.dataVolta = dataVolta;
-        this.tipoPassagem = tipoPassagem;
-        this.bagagem = bagagem;
+    public Passagem(){
+
     }
 
     public Passagem(String cidade) {
@@ -42,35 +47,35 @@ public class Passagem {
         this.cidade = cidade;
     }
 
-    public Pais getPais() {
+    public String getPais() {
         return pais;
     }
 
-    public void setPais(Pais pais) {
+    public void setPais(String pais) {
         this.pais = pais;
     }
 
-    public Date getDataIda() {
+    public String getDataIda() {
         return dataIda;
     }
 
-    public void setDataIda(Date dataIda) {
+    public void setDataIda(String dataIda) {
         this.dataIda = dataIda;
     }
 
-    public Date getDataVolta() {
+    public String getDataVolta() {
         return dataVolta;
     }
 
-    public void setDataVolta(Date dataVolta) {
+    public void setDataVolta(String dataVolta) {
         this.dataVolta = dataVolta;
     }
 
-    public TipoPassagem getTipoPassagem() {
+    public int getTipoPassagem() {
         return tipoPassagem;
     }
 
-    public void setTipoPassagem(TipoPassagem tipoPassagem) {
+    public void setTipoPassagem(int tipoPassagem) {
         this.tipoPassagem = tipoPassagem;
     }
 
@@ -98,6 +103,19 @@ public class Passagem {
     @Override
     public int hashCode() {
         return Objects.hash(cidade, pais, dataIda);
+    }
+
+    @Override
+    public String toString() {
+        return "Passagem{" +
+                "id=" + id +
+                ", cidade='" + cidade + '\'' +
+                ", pais='" + pais + '\'' +
+                ", dataIda='" + dataIda + '\'' +
+                ", dataVolta='" + dataVolta + '\'' +
+                ", tipoPassagem=" + tipoPassagem +
+                ", bagagem=" + bagagem +
+                '}';
     }
 }
 
